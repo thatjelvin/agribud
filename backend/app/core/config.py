@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     environment: str = 'development'
     secret_key: str = 'change-me'
     access_token_expire_minutes: int = 60 * 24
-    database_url: str = '******db:5432/agripulse'
+    database_url: str = 'postgresql+psycopg2://db/agripulse'
     redis_url: str = 'redis://redis:6379/0'
     allowed_origins: str = 'http://localhost:3000'
 

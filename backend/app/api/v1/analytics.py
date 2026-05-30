@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.api.dependencies.auth import get_current_user
 from app.application.services.analytics_service import AnalyticsService
 from app.core.database import get_db
+from app.domain.enums import UserRole
 from app.domain.models import FarmSnapshot, User
 from app.infrastructure.external.geospatial_provider import SentinelNasaMockProvider
 from app.infrastructure.repositories.farm_repository import FarmRepository
@@ -20,7 +21,7 @@ def generate_snapshot(
 ):
     repo = FarmRepository(db)
     farm = repo.get_farm(farm_id)
-    if not farm or (current_user.role != 'admin' and farm.owner_id != current_user.id):
+    if not farm or (current_user.role != UserRole.admin and farm.owner_id != current_user.id):
         raise HTTPException(status_code=404, detail='Farm not found')
     service = AnalyticsService(repo, SentinelNasaMockProvider())
     return service.generate_snapshot(farm)
@@ -34,7 +35,7 @@ def list_snapshots(
 ):
     repo = FarmRepository(db)
     farm = repo.get_farm(farm_id)
-    if not farm or (current_user.role != 'admin' and farm.owner_id != current_user.id):
+    if not farm or (current_user.role != UserRole.admin and farm.owner_id != current_user.id):
         raise HTTPException(status_code=404, detail='Farm not found')
     return repo.list_snapshots(farm_id)
 
@@ -47,7 +48,7 @@ def predict_yield(
 ):
     repo = FarmRepository(db)
     farm = repo.get_farm(farm_id)
-    if not farm or (current_user.role != 'admin' and farm.owner_id != current_user.id):
+    if not farm or (current_user.role != UserRole.admin and farm.owner_id != current_user.id):
         raise HTTPException(status_code=404, detail='Farm not found')
     snapshots = repo.list_snapshots(farm_id)
     latest_snapshot: FarmSnapshot | None = snapshots[0] if snapshots else None
@@ -63,7 +64,7 @@ def generate_risks(
 ):
     repo = FarmRepository(db)
     farm = repo.get_farm(farm_id)
-    if not farm or (current_user.role != 'admin' and farm.owner_id != current_user.id):
+    if not farm or (current_user.role != UserRole.admin and farm.owner_id != current_user.id):
         raise HTTPException(status_code=404, detail='Farm not found')
     snapshots = repo.list_snapshots(farm_id)
     if not snapshots:
@@ -80,6 +81,6 @@ def list_risks(
 ):
     repo = FarmRepository(db)
     farm = repo.get_farm(farm_id)
-    if not farm or (current_user.role != 'admin' and farm.owner_id != current_user.id):
+    if not farm or (current_user.role != UserRole.admin and farm.owner_id != current_user.id):
         raise HTTPException(status_code=404, detail='Farm not found')
     return repo.list_alerts(farm_id)

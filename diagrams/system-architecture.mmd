@@ -1,0 +1,8 @@
+flowchart LR
+  FE[Next.js Frontend] --> API[FastAPI Backend]
+  API --> DB[(PostgreSQL + PostGIS)]
+  API --> REDIS[(Redis)]
+  API --> ML[ML Service Modules]
+  API --> EXT[Sentinel-2 + NASA POWER Adapters]
+  API --> S3[(S3-compatible Storage Placeholder)]
+  REDIS --> CELERY[Celery Workers]

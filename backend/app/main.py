@@ -3,9 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import admin, analytics, auth, copilot, farms
 from app.core.config import settings
-from app.core.database import Base, engine
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.app_name)
 

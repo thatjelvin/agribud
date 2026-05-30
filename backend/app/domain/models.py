@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
 from geoalchemy2 import Geometry
 from sqlalchemy import JSON, Date, DateTime, Enum, Float, ForeignKey, Integer, String, Text
@@ -16,7 +16,7 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(255))
     hashed_password: Mapped[str] = mapped_column(String(255))
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     farms = relationship('Farm', back_populates='owner')
 
@@ -33,7 +33,7 @@ class Farm(Base):
     farm_size_ha: Mapped[float] = mapped_column(Float)
     polygon_geojson: Mapped[dict] = mapped_column(JSON)
     boundary: Mapped[str | None] = mapped_column(Geometry('POLYGON', srid=4326), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     owner = relationship('User', back_populates='farms')
     snapshots = relationship('FarmSnapshot', back_populates='farm')
@@ -52,7 +52,7 @@ class FarmSnapshot(Base):
     rainfall_mm: Mapped[float] = mapped_column(Float)
     temperature_c: Mapped[float] = mapped_column(Float)
     drought_risk_score: Mapped[float] = mapped_column(Float)
-    captured_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    captured_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
 
     farm = relationship('Farm', back_populates='snapshots')
 
@@ -66,7 +66,7 @@ class YieldPrediction(Base):
     confidence_score: Mapped[float] = mapped_column(Float)
     contributing_factors: Mapped[dict] = mapped_column(JSON)
     model_version: Mapped[str] = mapped_column(String(64), default='v1-statistical')
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     farm = relationship('Farm', back_populates='predictions')
 
@@ -80,6 +80,6 @@ class RiskAlert(Base):
     severity: Mapped[str] = mapped_column(String(24), index=True)
     message: Mapped[str] = mapped_column(Text)
     recommendation: Mapped[str] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     farm = relationship('Farm', back_populates='alerts')
