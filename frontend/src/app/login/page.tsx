@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -7,8 +8,8 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('farmer@example.com')
-  const [password, setPassword] = useState('password123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
@@ -35,6 +36,8 @@ export default function LoginPage() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Email"
+            autoComplete="email"
+            required
           />
           <input
             className="w-full rounded-md border px-3 py-2"
@@ -42,12 +45,20 @@ export default function LoginPage() {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Password"
+            autoComplete="current-password"
+            required
           />
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
           <Button className="w-full" type="submit">
             Sign in
           </Button>
         </form>
+        <p className="mt-4 text-center text-sm text-slate-600">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="font-medium text-emerald-700 hover:underline">
+            Create one
+          </Link>
+        </p>
       </div>
     </main>
   )

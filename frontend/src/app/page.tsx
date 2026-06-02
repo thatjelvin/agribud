@@ -9,15 +9,24 @@ export default function Home() {
       <p className="max-w-2xl text-slate-600">
         Farm intelligence platform with geospatial insights, weather risk signals, yield forecasting, and AI copilot workflows.
       </p>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap justify-center gap-3">
         <Link className={buttonVariants()} href="/login">
           Login
+        </Link>
+        <Link className={buttonVariants({ variant: 'secondary' })} href="/register">
+          Create account
         </Link>
         <Link className={buttonVariants({ variant: 'outline' })} href="/dashboard/farmer">
           Farmer Dashboard
         </Link>
-        <Link className={buttonVariants({ variant: 'secondary' })} href="/dashboard/admin">
-          Admin Dashboard
+        <Link className={buttonVariants({ variant: 'outline' })} href="/dashboard/agribusiness">
+          Agribusiness
+        </Link>
+        <Link className={buttonVariants({ variant: 'outline' })} href="/dashboard/financial-institution">
+          Lender
+        </Link>
+        <Link className={buttonVariants({ variant: 'outline' })} href="/dashboard/admin">
+          Admin
         </Link>
       </div>
     </main>

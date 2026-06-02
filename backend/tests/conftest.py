@@ -1,4 +1,12 @@
+"""pytest configuration: ensure both the backend and the ml/ package are importable."""
+
+from __future__ import annotations
+
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+BACKEND_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = BACKEND_ROOT.parent
+for p in (str(BACKEND_ROOT), str(REPO_ROOT)):
+    if p not in sys.path:
+        sys.path.insert(0, p)

@@ -2,24 +2,24 @@
 
 AgriPulse AI is an agricultural intelligence platform delivering farm geospatial analytics, yield prediction, risk alerts, and AI copilot assistance.
 
-## MVP Scope Implemented
+## MVP Scope
 
-- JWT authentication + RBAC (Farmer, Agribusiness, Financial Institution, Admin)
-- Farm creation with polygon boundary and crop metadata
-- Geospatial intelligence snapshots (Sentinel-2/NASA provider abstraction)
-- Yield prediction (v1 statistical baseline with confidence + factors)
-- Risk intelligence (drought, heat stress, anomaly alerts + recommendations)
-- AI copilot chat endpoint via replaceable provider interface
-- Farmer and Admin dashboards in Next.js
-- Docker, Docker Compose, CI workflow, env templates
+- JWT authentication + cookie + RBAC for `farmer`, `agribusiness`, `financial_institution`, and `admin` roles
+- Farm creation with polygon boundary, crop type, planting/harvest dates, and PostGIS persistence
+- Geospatial snapshot ingestion (NDVI, vegetation health, rainfall, temperature, drought risk) via a swappable provider abstraction; a deterministic mock is shipped for MVP and is replaced with Sentinel-2/NASA POWER adapters in production
+- Yield prediction v1 (statistical baseline behind a `YieldModel` interface) with confidence and contributing factors
+- Risk intelligence (drought, heat stress, weather anomaly) emitted as alerts with severity and recommendations
+- AI copilot chat endpoint via a vendor-agnostic OpenAI-compatible client (Groq by default, swap to OpenAI or any compatible provider)
+- Farmer and Admin dashboards in Next.js 16 (App Router, React Query, Leaflet)
+- Docker + Compose, Alembic migrations, environment templates, deployment + API docs
 
 ## Repository Structure
 
-- `backend/` FastAPI service (clean architecture-inspired layers)
-- `frontend/` Next.js app (TypeScript, Tailwind, React Query, shadcn-style UI components)
-- `ml/` model/features/pipelines/inference/training layout for future deep learning expansion
-- `docs/` API and deployment docs
-- `diagrams/` architecture diagram source
+- `backend/`  FastAPI + SQLAlchemy 2 (async) + PostGIS + Celery. Alembic in `backend/alembic/`.
+- `frontend/` Next.js 16 App Router (TypeScript, Tailwind 4, React Query, Leaflet).
+- `ml/`       `YieldModel` interface + `StatisticalYieldModelV1` + feature builder + inference entry. Designed to add CNN/LSTM/Transformer models behind the same interface.
+- `docs/`     API and deployment documentation.
+- `diagrams/` System architecture diagram source.
 
 ## Quick Start
 
@@ -34,13 +34,13 @@ docker compose up --build
 - Frontend: http://localhost:3000
 - API docs: http://localhost:8000/docs
 
-## Development Commands
+## Development
 
 ### Backend
 ```bash
 cd backend
 pip install -r requirements.txt
-pytest
+pytest            # 22 tests, no DB required
 uvicorn app.main:app --reload
 ```
 
@@ -53,11 +53,14 @@ npm run build
 npm run dev
 ```
 
-## Future Modules (Interfaces/Placeholders Only)
+## Out of MVP (per `IMPLEMENTATION_PLAN.md`)
 
-- Loan origination and banking integrations
-- Insurance and carbon-credit workflows
-- Voice/WhatsApp channels
-- IoT sensor ingestion and marketplace features
+- Loan origination, banking integrations
+- Parametric insurance, carbon credit workflows
+- WhatsApp, voice AI, IoT sensor ingestion
+- Marketplace and supply-chain features
 
-See `IMPLEMENTATION_PLAN.md` for roadmap and tradeoffs.
+These are intentionally left out of MVP per the implementation plan; the
+PRD and ARCHITECTURE.md describe the longer-term target.
+
+See `IMPLEMENTATION_PLAN.md` and `docs/API.md` for details.
